@@ -1,0 +1,352 @@
+
+db.Employee.insertMany([
+  {
+    employeeId: 1,
+    firstName: "Sumit",
+    lastName: "Shinde",
+    email: "sumit@company.com",
+    phone: "9000000001",
+    address: {
+      houseNo: 101,
+      street: "MG Road",
+      city: "Pune",
+      state: "Maharashtra",
+      country: "India",
+      pincode: "411001"
+    },
+    salary: 50000,
+    designation: "Developer",
+    experience: 3,
+    dateOfJoining: "2023-06-11",
+    birthdate: "1998-04-15"
+  },
+  {
+    employeeId: 2,
+    firstName: "Rahul",
+    lastName: "Deshmukh",
+    email: "rahul@company.com",
+    phone: "9000000002",
+    address: {
+      houseNo: 202,
+      street: "FC Road",
+      city: "Pune",
+      state: "Maharashtra",
+      country: "India",
+      pincode: "411004"
+    },
+    salary: 60000,
+    designation: "Supervisor",
+    experience: 5,
+    dateOfJoining: "2021-02-10",
+    birthdate: "1996-05-21"
+  },
+  {
+    employeeId: 3,
+    firstName: "Karan",
+    lastName: "Jadhav",
+    email: "karan@company.com",
+    phone: "9000000003",
+    address: {
+      houseNo: 303,
+      street: "Lake Road",
+      city: "Mumbai",
+      state: "Maharashtra",
+      country: "India",
+      pincode: "400050"
+    },
+    salary: 75000,
+    designation: "Manager",
+    experience: 8,
+    dateOfJoining: "2017-05-02",
+    birthdate: "1991-11-05"
+  },
+  {
+    employeeId: 4,
+    firstName: "Saniya",
+    lastName: "Kale",
+    email: "saniya@company.com",
+    phone: "9000000004",
+    address: {
+      houseNo: 404,
+      street: "Link Street",
+      city: "Mumbai",
+      state: "Maharashtra",
+      country: "India",
+      pincode: "400001"
+    },
+    salary: 55000,
+    designation: "Tester",
+    experience: 4,
+    dateOfJoining: "2023-01-15",
+    birthdate: "1998-02-10"
+  },
+  {
+    employeeId: 5,
+    firstName: "Kunal",
+    lastName: "More",
+    email: "kunal@company.com",
+    phone: "9000000005",
+    address: {
+      houseNo: 505,
+      street: "Brigade Road",
+      city: "Bangalore",
+      state: "Karnataka",
+      country: "India",
+      pincode: "560001"
+    },
+    salary: 65000,
+    designation: "Developer",
+    experience: 6,
+    dateOfJoining: "2019-09-01",
+    birthdate: "1994-12-08"
+  }
+])
+
+
+
+db.Transaction.insert([
+  {
+    transactionId: 201,
+    transactionDate: "2026-01-10",
+    name: "Amit",
+    transactionDetails: {
+      itemId: 101,
+      itemName: "Laptop",
+      quantity: 1,
+      price: 50000
+    },
+    payment: {
+      type: "Credit",
+      totalAmount: 50000,
+      paymentSuccessful: true
+    },
+    remark: ""
+  },
+  {
+    transactionId: 202,
+    transactionDate: "2026-01-15",
+    name: "Rahul",
+    transactionDetails: {
+      itemId: 102,
+      itemName: "Monitor",
+      quantity: 2,
+      price: 15000
+    },
+    payment: {
+      type: "Debit",
+      totalAmount: 30000,
+      paymentSuccessful: true
+    },
+    remark: ""
+  },
+  {
+    transactionId: 203,
+    transactionDate: "2026-02-05",
+    name: "Karan",
+    transactionDetails: {
+      itemId: 103,
+      itemName: "Keyboard",
+      quantity: 5,
+      price: 2000
+    },
+    payment: {
+      type: "Cash",
+      totalAmount: 10000,
+      paymentSuccessful: true
+    },
+    remark: ""
+  },
+  {
+    transactionId: 204,
+    transactionDate: "2026-02-15",
+    name: "Neha",
+    transactionDetails: {
+      itemId: 104,
+      itemName: "Mouse",
+      quantity: 5,
+      price: 1000
+    },
+    payment: {
+      type: "Credit",
+      totalAmount: 5000,
+      paymentSuccessful: true
+    },
+    remark: ""
+  },
+  { 
+  
+  
+  
+  
+  
+  
+    transactionId: 205,
+    transactionDate: "2026-03-01",
+    name: "Kunal",
+    transactionDetails: {
+      itemId: 105,
+      itemName: "Printer",
+      quantity: 1,
+      price: 12000
+    },
+    payment: {
+      type: "Debit",
+      totalAmount: 12000,
+      paymentSuccessful: true
+    },
+    remark: ""
+  },
+  {
+    transactionId: 206,
+    transactionDate: "2026-03-10",
+    name: "Amit",
+    transactionDetails: {
+      itemId: 106,
+      itemName: "SSD",
+      quantity: 2,
+      price: 5000
+    },
+    payment: {
+      type: "Cash",
+      totalAmount: 10000,
+      paymentSuccessful: true
+    },
+    remark: "Regular purchase"
+  },
+  {
+    transactionId: 207,
+    transactionDate: "2026-03-20",
+    name: "Rahul",
+    transactionDetails: {
+      itemId: 107,
+      itemName: "Tablet",
+      quantity: 2,
+      price: 20000
+    },
+    payment: {
+      type: "Credit",
+      totalAmount: 40000,
+      paymentSuccessful: true
+    },
+    remark: ""
+  },
+  {
+    transactionId: 208,
+    transactionDate: "2026-04-01",
+    name: "Karan",
+    transactionDetails: {
+      itemId: 108,
+      itemName: "Chair",
+      quantity: 4,
+      price: 5000
+    },
+    payment: {
+      type: "Cash",
+      totalAmount: 20000,
+      paymentSuccessful: true
+    },
+    remark: ""
+  },
+  {
+    transactionId: 209,
+    transactionDate: "2026-04-10",
+    name: "Neha",
+    transactionDetails: {
+      itemId: 109,
+      itemName: "Desk",
+      quantity: 2,
+      price: 8000
+    },
+    payment: {
+      type: "Debit",
+      totalAmount: 16000,
+      paymentSuccessful: true
+    },
+    remark: ""
+  },
+  {
+    transactionId: 210,
+    transactionDate: "2026-04-20",
+    name: "Kunal",
+    transactionDetails: {
+      itemId: 110,
+      itemName: "Headset",
+      quantity: 3,
+      price: 3000
+    },
+    payment: {
+      type: "Credit",
+      totalAmount: 9000,
+      paymentSuccessful: true
+    },
+    remark: ""
+  }
+])
+
+
+
+
+
+db.Employee.find().pretty()
+
+db.Transaction.find().pretty()
+
+
+
+
+db.Employee.updateMany(
+  {},
+  { $inc: { salary: 4000 } }
+)
+
+
+
+db.Transaction.updateOne(
+  { transactionId: 201 },
+  { $set: { remark: "Payment completed" } }
+)
+
+
+
+db.Employee.updateOne(
+  { firstName: "Rahul", designation: "Supervisor" },
+  { $set: { designation: "Manager" } }
+)
+
+
+
+db.Employee.updateOne(
+  { employeeId: 3 },
+  { $set: { designation: "Senior Manager" } }
+)
+
+
+
+
+db.Employee.updateOne(
+  { employeeId: 1 },
+  {
+    $set: {
+      "address.houseNo": 303,
+      "address.street": "JM Road",
+      "address.city": "Pune",
+      "address.state": "Maharashtra",
+      "address.country": "India",
+      "address.pincode": "411008"
+    }
+  }
+)
+
+
+
+
+db.Transaction.deleteOne({
+  name: "Sumit",
+  transactionDate: "2026-03-10"
+})
+
+
+
+db.Employee.deleteMany({
+  firstName: /^K/
+})

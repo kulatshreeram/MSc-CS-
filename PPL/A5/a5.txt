@@ -1,0 +1,355 @@
+Let's do **Set A — 1 & 2**.
+
+## 1. Create List, add 3 elements, remove even numbers
+
+```scala
+object ListDemo {
+  def main(args: Array[String]): Unit = {
+    val list = List(10, 15, 20, 25)
+
+    val newList = 5 :: 7 :: 9 :: list
+
+    val result = newList.filter(_ % 2 != 0)
+
+    println("Final List = " + result)
+  }
+}
+```
+
+### What happens
+
+Initial:
+
+```text
+10, 15, 20, 25
+```
+
+Add 3 elements using `::`:
+
+```scala
+5 :: 7 :: 9 :: list
+```
+
+Result:
+
+```text
+5, 7, 9, 10, 15, 20, 25
+```
+
+Remove even numbers:
+
+```scala
+newList.filter(_ % 2 != 0)
+```
+
+Final:
+
+```text
+List(5, 7, 9, 15, 25)
+```
+
+`filter` **keeps** elements for which the condition is true.
+
+---
+
+## 2. Remove specific element by value and by index
+
+```scala
+import scala.io.StdIn
+
+object RemoveList {
+  def main(args: Array[String]): Unit = {
+    val list = List(10, 20, 30, 40, 50)
+
+    print("Enter element to remove: ")
+    val value = StdIn.readInt()
+
+    val byValue = list.filterNot(_ == value)
+    println("After removing by value = " + byValue)
+
+    print("Enter index to remove: ")
+    val index = StdIn.readInt()
+
+    if (index >= 0 && index < list.length) {
+      val byIndex = list.patch(index, Nil, 1)
+      println("After removing by index = " + byIndex)
+    } else {
+      println("Invalid index")
+    }
+  }
+}
+```
+
+### By value
+
+```scala
+list.filterNot(_ == value)
+```
+
+If the user enters `30`:
+
+```text
+List(10, 20, 40, 50)
+```
+
+### By index
+
+```scala
+list.patch(index, Nil, 1)
+```
+
+If the user enters index `2`:
+
+```text
+10  20  30  40  50
+0   1   2   3   4
+        ↑
+      removed
+```
+
+Result:
+
+```text
+List(10, 20, 40, 50)
+```
+
+**Remember:**
+
+* `filterNot` → remove by **value**
+* `patch(index, Nil, 1)` → remove by **index**
+* `::` → add at **front**.
+## 3. Find maximum and minimum in an integer Array
+
+```scala
+object MaxMin {
+  def main(args: Array[String]): Unit = {
+    val arr = Array(25, 10, 45, 5, 30)
+
+    var max = arr(0)
+    var min = arr(0)
+
+    for (n <- arr) {
+      if (n > max)
+        max = n
+
+      if (n < min)
+        min = n
+    }
+
+    println("Maximum = " + max)
+    println("Minimum = " + min)
+  }
+}
+```
+
+### Logic
+
+Start with the first element:
+
+```text
+max = 25
+min = 25
+```
+
+Then check every element:
+
+```text
+10 → min = 10
+45 → max = 45
+5  → min = 5
+30 → nothing changes
+```
+
+Final:
+
+```text
+Maximum = 45
+Minimum = 5
+```
+
+The loop:
+
+```scala
+for (n <- arr)
+```
+
+means **take each element of the array one by one**.
+
+---
+
+## 4. Separate even and odd numbers into two Lists
+
+```scala
+object EvenOdd {
+  def main(args: Array[String]): Unit = {
+    val arr = Array(10, 15, 20, 25, 30, 35)
+
+    var even = List[Int]()
+    var odd = List[Int]()
+
+    for (n <- arr) {
+      if (n % 2 == 0)
+        even = even :+ n
+      else
+        odd = odd :+ n
+    }
+
+    println("Even List = " + even)
+    println("Odd List = " + odd)
+  }
+}
+```
+
+Output:
+
+```text
+Even List = List(10, 20, 30)
+Odd List = List(15, 25, 35)
+```
+
+### Main idea
+
+```scala
+if (n % 2 == 0)
+    even = even :+ n
+else
+    odd = odd :+ n
+```
+
+`% 2 == 0` → even.
+
+`:+` adds an element to the **end of a List**.
+
+So:
+
+```text
+10 → even
+15 → odd
+20 → even
+25 → odd
+...
+```
+
+**Note:** `List[Int]()` creates an empty integer List, and then we build new Lists because Scala Lists are immutable.
+## Set B — Practice
+
+### 1. Search for an element in an Array and display its index
+
+```scala id="3x6r8q"
+import scala.io.StdIn
+
+object ArraySearch {
+  def main(args: Array[String]): Unit = {
+    val arr = Array(10, 20, 30, 40, 50)
+
+    print("Enter element to search: ")
+    val target = StdIn.readInt()
+
+    var found = false
+
+    for (i <- arr.indices) {
+      if (arr(i) == target) {
+        println("Element found at index " + i)
+        found = true
+      }
+    }
+
+    if (!found)
+      println("Element not found")
+  }
+}
+```
+
+### New thing: `arr.indices`
+
+For:
+
+```scala
+val arr = Array(10, 20, 30, 40, 50)
+```
+
+```scala
+arr.indices
+```
+
+gives:
+
+```text
+0, 1, 2, 3, 4
+```
+
+So:
+
+```scala
+for (i <- arr.indices)
+```
+
+lets us use `i` as the **index**:
+
+```scala
+arr(i)
+```
+
+If user enters `30`:
+
+```text
+Element found at index 2
+```
+
+---
+
+### 2. Merge two Lists, add element, remove duplicates
+
+```scala id="x4xq1p"
+import scala.io.StdIn
+
+object MergeLists {
+  def main(args: Array[String]): Unit = {
+    val list1 = List(10, 20, 30)
+    val list2 = List(30, 40, 50)
+
+    val merged = list1 ++ list2
+    val added = merged :+ 60
+    val result = added.distinct
+
+    println("Final List = " + result)
+  }
+}
+```
+
+Output:
+
+```text
+Final List = List(10, 20, 30, 40, 50, 60)
+```
+
+### Three operations
+
+**1. Merge:**
+
+```scala
+list1 ++ list2
+```
+
+```text
+10 20 30 + 30 40 50
+↓
+10 20 30 30 40 50
+```
+
+**2. Add element at end:**
+
+```scala
+merged :+ 60
+```
+
+**3. Remove duplicates:**
+
+```scala
+added.distinct
+```
+
+`distinct` keeps only one occurrence of each value.
+
+So Assignment 5 is now **fully done: Set A 1–4 + Set B 1–2.**
+

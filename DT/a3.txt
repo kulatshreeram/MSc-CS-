@@ -1,0 +1,227 @@
+QUERY 1
+
+Find employees having designation as either 'Manager' or 'Floor Supervisor'.
+
+db.Employee.find({ designation: { $in: ["Manager", "Floor Supervisor"] }})
+
+
+QUERY 2
+
+Find an employee whose name ends with "l" and print the output in JSON format.
+
+db.Employee.find({firstName: /l$/}).forEach(printjson)
+
+
+QUERY 3
+
+Display the name of an employee whose salary is greater than Rs. 60000 using a MongoDB cursor.
+
+var cursor = db.Employee.find(
+{ salary: { $gt: 60000 } },
+{ firstName: 1, lastName: 1, _id: 0 }
+)
+cursor.forEach(function(doc) {
+print(doc.firstName + " " + doc.lastName)
+})
+
+
+QUERY 4
+
+Sort the employees in descending order of their designation.
+
+db.Employee.find().sort({designation: -1})
+
+
+QUERY 5
+
+Count the total number of employees in a collection.
+
+db.Employee.countDocuments()
+
+
+QUERY 6
+Calculate the sum of the total amount paid for all the transaction documents.
+
+db.Transaction.aggregate([
+  {
+    $group: {
+      _id: null,
+      totalAmount: {
+        $sum: "$payment.totalAmount"
+      }
+    }
+  }
+])
+
+USING SIMPLE METHOD
+
+var total = 0;
+
+db.Transaction.find().forEach(function(doc) {
+    total = total + doc.payment.totalAmount;
+});
+
+print("Total Amount = " + total);
+
+QUERY 7
+Calculate the sum of the total amount paid for each payment type.
+
+db.Transaction.aggregate([
+  {
+    $group: {
+      _id: "$payment.type",
+      totalAmount: {
+        $sum: "$payment.totalAmount"
+      }
+    }
+  }
+])
+
+USING SIMPLE METHOD
+
+
+var credit = 0;
+var debit = 0;
+var cash = 0;
+
+db.Transaction.find().forEach(function(doc) {
+
+    if (doc.payment.type == "Credit") {
+        credit = credit + doc.payment.totalAmount;
+    }
+
+    if (doc.payment.type == "Debit") {
+        debit = debit + doc.payment.totalAmount;
+    }
+
+    if (doc.payment.type == "Cash") {
+        cash = cash + doc.payment.totalAmount;
+    }
+
+});
+
+print("Credit = " + credit);
+print("Debit = " + debit);
+print("Cash = " + cash);
+
+QUERY 8
+Find the transaction id of the latest transaction.
+
+db.Transaction.find(
+  {},
+  { transactionId: 1, transactionDate: 1, _id: 0 }
+).sort({
+  transactionDate: -1
+}).limit(1)
+
+QUERY 9
+=======
+Find designation of employees who have made transaction of amount greater than Rs. 500.
+
+db.Transaction.aggregate([
+  {
+    $match: {
+      "payment.totalAmount": { $gt: 500 }
+    }
+  },
+  {
+    $lookup: {
+      from: "Employee",
+      localField: "name",
+      foreignField: "firstName",
+      as: "emp"
+    }
+  },
+  {
+    $unwind: "$emp"
+  },
+  {
+    $project: {
+      _id: 0,
+      designation: "$emp.designation"
+    }
+  }
+])
+
+USING SIMPLE METHOD
+db.Transaction.find({
+    "payment.totalAmount": { $gt: 500 }
+}).forEach(function(transaction) {
+
+    var employee = db.Employee.findOne({
+        firstName: transaction.name
+    });
+
+    if (employee != null) {
+        print(employee.designation);
+    }
+
+});
+
+QUERY 10 - MAP REDUCE (OLD METHOD)
+Find the total quantity of a particular item sold using MapReduce.
+
+Particular item: "Laptop"
+
+var map = function() {
+  if (this.transactionDetails.itemName == "Laptop") {
+    emit(
+      this.transactionDetails.itemName,
+      this.transactionDetails.quantity
+    );
+  }
+};
+
+var reduce = function(key, values) {
+  return Array.sum(values);
+};
+
+db.Transaction.mapReduce(
+  map,
+  reduce,
+  { out: "item_quantity" }
+)
+
+Display result:
+
+db.item_quantity.find().pretty()
+
+USING SIMPLE METHOD
+
+var totalQuantity = 0;
+
+db.Transaction.find({
+    "transactionDetails.itemName": "Laptop"
+}).forEach(function(doc) {
+
+    totalQuantity = totalQuantity +
+                    doc.transactionDetails.quantity;
+
+});
+
+print("Total Laptop Quantity = " + totalQuantity);
+
+
+MODERN MONGODB ALTERNATIVE
+If mapReduce() is not supported, use the modern Aggregation Pipeline:
+
+db.Transaction.aggregate([
+  {
+    $match: {
+      "transactionDetails.itemName": "Laptop"
+    }
+  },
+  {
+    $group: {
+      _id: "$transactionDetails.itemName",
+      totalQuantity: {
+        $sum: "$transactionDetails.quantity"
+      }
+    }
+  }
+])
+
+
+
+
+

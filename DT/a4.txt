@@ -1,0 +1,285 @@
+1. ==================== Library Database ====================
+
+CREATE
+(a1:Person:Author {authorId:1, name:"J. R. R.Tolkien", born:1892}),vairable ,label,property
+(a2:Person:Author {authorId:2, name:"GeorgeOrwell", born:1903}),
+
+(r1:Person:Reader {readerId:1, name:"Joel Guedes"}),
+(r2:Person:Reader {readerId:2, name:"Lucas Trowman"}),
+
+(rv1:Person:Reviewer {reviewerId:1, name:"Daniel Reed"}),
+
+(t1:Person:Translator {translatorId:1, name:"David French"}),
+
+(s1:Person:Supplier {supplierId:1, name:"Global Book Distributors"}),
+
+(p1:Publisher {publisherId:1, name:"Allen & Unwin", city:"London"}),
+(p2:Publisher {publisherId:2, name:"Secker & Warburg", city:"London"}),
+
+(b1:Book {bookId:101, title:"The Lord of the Rings", tags:["Fantasy","Adventure"], status:"Available", condition:"New", cost:1200, type:"Novel"}),
+(b2:Book {bookId:102, title:"The Hobbit", tags:["Fantasy"], status:"Issued", condition:"Old", cost:800, type:"Novel"}),
+(b3:Book {bookId:103, title:"Nineteen Eighty-Four", tags:["Dystopian","Political"], status:"Available", condition:"New", cost:600, type:"Novel"}),
+
+(a1)-[:WROTE]->(b1),
+(a1)-[:WROTE]->(b2),
+(a2)-[:WROTE]->(b3),
+
+(b1)-[:PublishedBy]->(p1),
+(b2)-[:PublishedBy]->(p1),
+(b3)-[:PublishedBy]->(p2),
+
+(s1)-[:Supplies]->(b1),
+(s1)-[:Supplies]->(b2),
+
+(r1)-[:IssuedBy {issueDate:date("2026-08-01")}]->(b2),
+(r1)-[:ReturnedBy {returnDate:date("2026-08-10"), fine:0}]->(b2),
+
+(rv1)-[:ReviewedBy {rating:5, remark:"Excellent", reviewDate:date("2026-08-15")}]->(b1),
+
+(t1)-[:TranslatedBy {language:"English"}]->(b1),
+
+(r1)-[:Votes {rating:5}]->(b1);
+
+
+2. ==================== Song Database ====================
+
+CREATE
+(ar1:Artist {artistId:1, name:"Tame Impala", country:"Australia"}),
+(ar2:Artist {artistId:2, name:"Arctic Monkeys", country:"England"}),
+
+(sa1:SongAuthor {authorId:1, name:"Kevin Parker"}),
+(sa2:SongAuthor {authorId:2, name:"Alex Turner"}),
+
+(rc1:RecordingCompany {companyId:1, name:"Universal Music", country:"USA"}),
+(rc2:RecordingCompany {companyId:2, name:"Sony Music", country:"USA"}),
+
+(rs1:RecordingStudio {studioId:1, name:"Wave House", city:"Perth"}),
+(rs2:RecordingStudio {studioId:2, name:"RAK Studios", city:"London"}),
+
+(s1:Song {songId:101, title:"Let It Happen", genre:"Psychedelic Rock", language:"English", duration:"7:47", releaseYear:2015}),
+(s2:Song {songId:102, title:"505", genre:"Indie Rock", language:"English", duration:"4:13", releaseYear:2007}),
+
+(ar1)-[:Performs]->(s1),
+(ar2)-[:Performs]->(s2),
+
+(s1)-[:WrittenBy]->(sa1),
+(s2)-[:WrittenBy]->(sa2),
+
+(s1)-[:RecordedIn]->(rs1),
+(s2)-[:RecordedIn]->(rs2),
+
+(rs1)-[:ManagedBy]->(rc1),
+(rs2)-[:ManagedBy]->(rc2),
+
+(rc1)-[:Finances]->(s1),
+(rc2)-[:Finances]->(s2);
+
+
+3. ==================== Employee Database ====================
+
+CREATE
+(e1:Employee {
+    employeeId:1,
+    name:"Joel Guedes",
+    designation:"Software Engineer",
+    experience:2,
+    salary:850000
+}),
+(e2:Employee {
+    employeeId:2,
+    name:"Kayden Break",
+    designation:"Data Analyst",
+    experience:3,
+    salary:750000
+}),
+
+(d1:Department {
+    departmentId:1,
+    name:"Software Development",
+    location:"Pune"
+}),
+(d2:Department {
+    departmentId:2,
+    name:"Data Analytics",
+    location:"Mumbai"
+}),
+
+(sk1:Skillset {
+    skillId:1,
+    skill:"Python"
+}),
+(sk2:Skillset {
+    skillId:2,
+    skill:"Neo4j"
+}),
+
+(p1:Project {
+    projectId:101,
+    name:"Aarogya",
+    status:"Completed",
+    budget:500000
+}),
+(p2:Project {
+    projectId:102,
+    name:"InsightVault",
+    status:"In Progress",
+    budget:900000
+}),
+
+(e1)-[:Works_in]->(d1),
+(e2)-[:Works_in]->(d2),
+
+(e1)-[:Has_acquired {year:2025}]->(sk1),
+(e1)-[:Has_acquired {year:2026}]->(sk2),
+(e2)-[:Has_acquired]->(sk1),
+
+(e1)-[:Assigned_to {role:"Developer"}]->(p1),
+(e1)-[:Assigned_to {role:"AI Engineer"}]->(p2),
+
+(p1)-[:Controlled_by]->(d1),
+(p2)-[:Controlled_by]->(d1),
+
+(e1)-[:Project_manager]->(p1);
+
+4. ==================== Movie Database ====================
+
+CREATE
+(a1:Actor {
+    actorId:1,
+    name:"Leonardo DiCaprio",
+    nationality:"American",
+    age:50
+}),
+(a2:Actor {
+    actorId:2,
+    name:"Cillian Murphy",
+    nationality:"Irish",
+    age:49
+}),
+
+(m1:Movie {
+    movieId:101,
+    title:"Inception",
+    genre:"Sci-Fi",
+    language:"English",
+    releaseYear:2010,
+    imdbRating:8.8
+}),
+(m2:Movie {
+    movieId:102,
+    title:"Oppenheimer",
+    genre:"Biography",
+    language:"English",
+    releaseYear:2023,
+    imdbRating:8.4
+}),
+
+(r1:Role {
+    roleId:1,
+    character:"Dom Cobb"
+}),
+(r2:Role {
+    roleId:2,
+    character:"J. Robert Oppenheimer"
+}),
+
+(d1:Director {
+    directorId:1,
+    name:"Christopher Nolan"
+}),
+
+(p1:Producer {
+    producerId:1,
+    name:"Emma Thomas"
+}),
+
+(f1:Financier {
+    financierId:1,
+    name:"Warner Bros."
+}),
+(f2:Financier {
+    financierId:2,
+    name:"Universal Pictures"
+}),
+
+(a1)-[:ACTED_IN]->(m1),
+(a2)-[:ACTED_IN]->(m2),
+
+(a1)-[:PLAYED]->(r1),
+(a2)-[:PLAYED]->(r2),
+
+(r1)-[:ROLE_IN]->(m1),
+(r2)-[:ROLE_IN]->(m2),
+
+(d1)-[:DIRECTED]->(m1),
+(d1)-[:DIRECTED]->(m2),
+
+(p1)-[:PRODUCED]->(m1),
+(p1)-[:PRODUCED]->(m2),
+
+(f1)-[:FINANCED {budget:160000000}]->(m1),
+(f2)-[:FINANCED {budget:100000000}]->(m2);
+
+5. ==================== Social Network Database ====================
+
+CREATE
+(p1:Person {
+    personId:1,
+    name:"James Carter",
+    age:22,
+    city:"New York"
+}),
+(p2:Person {
+    personId:2,
+    name:"Emily Carter",
+    age:21,
+    city:"Los Angeles"
+}),
+
+(a1:Affiliation {
+    affiliationId:1,
+    name:"Harvard University",
+    type:"University"
+}),
+
+(g1:Group {
+    groupId:1,
+    name:"AI Developers"
+}),
+
+(s1:Story {
+    storyId:1,
+    title:"Won AI Hackathon",
+    category:"Achievement",
+    createdOn:date("2026-08-10")
+}),
+
+(t1:Timeline {
+    timelineId:1,
+    year:2026
+}),
+
+(m1:Message {
+    messageId:1,
+    content:"Congratulations on your achievement!",
+    sentOn:date("2026-08-11")
+}),
+
+(p1)-[:Friend_of {since:2022}]->(p2),
+
+(p1)-[:Affiliated_to]->(a1),
+(p2)-[:Affiliated_to]->(a1),
+
+(p1)-[:Belongs_to]->(g1),
+(p2)-[:Belongs_to]->(g1),
+
+(p1)-[:Creates]->(s1),
+
+(s1)-[:Refers_to]->(p2),
+
+(p1)-[:Creates]->(t1),
+
+(t1)-[:Reference_for]->(s1),
+
+(t1)-[:Contains]->(m1);
+

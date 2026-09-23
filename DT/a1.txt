@@ -1,0 +1,430 @@
+db.Film.insertMany([{
+filmId:1,
+title:"Iron Man",
+year:2008,
+genre:["Action","Sci-Fi"],
+actors:[{firstName:"Robert",lastName:"Downey Jr."},
+        {firstName:"Jon",lastName:"Favreau"}],
+directors:[{firstName:"Jon",lastName:"Favreau"}],
+releasDetails:[{place:"USA",date:"2008-05-02",rating:8}]
+},
+{
+filmId:2,
+title:"Thor",
+year:2011,
+genre:["Action","Fantasy"],
+actors:[{firstName:"Chris",lastName:"Hemsworth"},
+        {firstName:"Tom",lastName:"Hiddleston"}],
+directors:[{firstName:"Kenneth",lastName:"Branagh"}],
+releasDetails:[{place:"USA",date:"2011-05-06",rating:7}]
+},
+{
+filmId:3,
+title:"Joker",
+year:2019,
+genre:["Crime","Drama"],
+actors:[{firstName:"Joaquin",lastName:"Phoenix"},
+        {firstName:"Robert",lastName:"De Niro"}],
+directors:[{firstName:"Tdod",lastName:"Phillips"}],
+releasDetails:[{place:"USA",date:"2019-10-04",rating:8}]
+},
+{
+filmId:4,
+title:"Batman",
+year:2008,
+genre:["Action","Crime"],
+actors:[{firstName:"Christian",lastName:"Bale"},
+        {firstName:"Michael",lastName:"Caine"}],
+directors:[{firstName:"Christopher",lastName:"Nolan"}],
+releasDetails:[{place:"USA",date:"2019-07-20",rating:9}]
+},
+{
+filmId:5,
+title:"Tenet",
+year:2019,
+genre:["Action","Sci-Fi"],
+actors:[{firstName:"Robert",lastName:"Pattinson"},
+        {firstName:"John",lastName:"Washington"}],
+directors:[{firstName:"Christopher",lastName:"Nolan"}],
+releasDetails:[{place:"UK",date:"2019-08-26",rating:8}]
+}])
+db.Film.insertMany([{
+filmId:6,
+title:"RRR",
+year:2022,
+genre:["Action","Drama","History"],
+actors:[{firstName:"Ram",lastName:"Charan"},
+        {firstName:"Jr. NTR",lastName:"Rao"}],
+directors:[{firstName:"S",lastName:"Rajamouli"}],
+releasDetails:[{place:"India",date:"2022-03-25",rating:9},
+               {place:"USA",date:"2022-03-24",rating:9}]
+},
+{
+filmId:7,
+title:"Bahubali",
+year:2011,
+genre:["Action","Fantasy"],
+actors:[{firstName:"Prabhas",lastName:""},
+        {firstName:"Rana",lastName:"Daggubati"}],
+directors:[{firstName:"S",lastName:"Rajamouli"}],
+releasDetails:[{place:"India",date:"2015-07-10",rating:9}]
+},
+{
+filmId:8,
+title:"Devdas",
+year:2002,
+genre:["Romance","Drama"],
+actors:[{firstName:"Shahrukh",lastName:"Khan"},
+        {firstName:"Madhuri",lastName:"Dixit"}],
+directors:[{firstName:"Sanjay",lastName:"Bhansali"}],
+releasDetails:[{place:"India",date:"2002-07-12",rating:8}]
+},
+{
+filmId:9,
+title:"Kal Ho Naa Ho",
+year:2003,
+genre:["Romance","Drama"],
+actors:[{firstName:"Shahrukh",lastName:"Khan"},
+        {firstName:"Madhuri",lastName:"Dixit"}],
+directors:[{firstName:"Nikhil",lastName:"Advani"}],
+releasDetails:[{place:"India",date:"2003-11-28",rating:8}]
+},
+{
+filmId:10,
+title:"Eega",
+year:2012,
+genre:["Comedy","Fantasy"],
+actors:[{firstName:"Nani",lastName:""},
+        {firstName:"Sudeep",lastName:""}],
+directors:[{firstName:"S",lastName:"Rajamouli"}],
+releasDetails:[{place:"India",date:"2012-07-06",rating:8}]
+}])
+
+db.Actor.insertMany([{
+actorID:1,
+firstName:"Robert",lastName:"Downey Jr.",
+address:{street:"Main St",city:"New York",state:"NY",country:"USA",pincode:"10001"},
+contact:{email:"robert@example.com",phone:"9000000001"},
+age:61},
+{
+actorID:2,
+firstName:"Chris",lastName:"Hemsworth",
+address:{street:"King St",city:"Melbourne",state:"Victoria",country:"Australia",pincode:"3000"},
+contact:{email:"chrishems@example.com",phone:"9000000002"},
+age:42},
+{
+actorID:3,
+firstName:"Joaquin",lastName:"Phoenix",
+address:{street:"Park Ave",city:"New York",state:"NY",country:"USA",pincode:"10002"},
+contact:{email:"joaquin@example.com",phone:"9000000003"},
+age:51},
+{
+actorID:4,
+firstName:"Christian",lastName:"Bale",
+address:{street:"King Rd",city:"London",state:"England",country:"UK",pincode:"SW1A"},
+contact:{email:"balechristian@example.com",phone:"9000000004"},
+age:52},
+{
+actorID:5,
+firstName:"Ram",lastName:"Charan",
+address:{street:"Lake Rd",city:"Hyderabad",state:"Telangana",country:"India",pincode:"500001"},
+contact:{email:"ramcharan@example.com",phone:"9000000005"},
+age:40},
+{
+actorID:6,
+firstName:"Jr. NTR",lastName:"Rao",
+address:{street:"Park Rd",city:"Hyderabad",state:"Telangana",country:"India",pincode:"500002"},
+contact:{email:"jrntr@example.com",phone:"9000000006"},
+age:43},
+{
+actorID:7,
+firstName:"Rana",lastName:"Daggubati",
+address:{street:"Hill Rd",city:"Hyderabad",state:"Telangana",country:"India",pincode:"500003"},
+contact:{email:"rana@example.com",phone:"9000000007"},
+age:41},
+{
+actorID:8,
+firstName:"Prabhas",lastName:"",
+address:{street:"Film Rd",city:"Hyderabad",state:"Telangana",country:"India",pincode:"500004"},
+contact:{email:"prabhas@example.com",phone:"9000000008"},
+age:46},
+{
+actorID:9,
+firstName:"Shahrukh",lastName:"Khan",
+address:{street:"Sea Rd",city:"Mumbai",state:"Maharashtra",country:"India",pincode:"400001"},
+contact:{email:"skhan@example.com",phone:"9000000009"},
+age:60},
+{
+actorID:10,
+firstName:"Madhuri",lastName:"Dixit",
+address:{street:"Lake Rd",city:"Mumbai",state:"Maharashtra",country:"India",pincode:"400002"},
+contact:{email:"madhuri@example.com",phone:"9000000001"},
+age:59
+}])
+------------
+queries
+-----------
+db.Actor.insertOne([
+{
+actorID:11,
+firstName:"Tom",lastName:"Holland",
+address:{street:"Park lane",city:"London",state:"England",country:"Uk",pincode:"SW1A"},
+contact:{email:"tommy@example.com",phone:"9000000011"},
+age:28
+}])
+db.Film.insertOne([{
+filmId:11,
+title:"Spiderman",
+year:2017,
+genre:["Action","Adventure"],
+actors:[{firstName:"Tom",lastName:"Holland"}],
+directors:[{firstName:"Jon",lastName:"Watts"}],
+releasDetails:[{place:"USA",date:"2017-07-07",rating:8}]
+}])
+
+
+
+
+fymsc41> db.Film.deleteOne({title:"SpiderMan"})
+{ acknowledged: true, deletedCount: 0 }
+fymsc41> db.Actor.deleteOne({firstName:"Tom"})
+{ acknowledged: true, deletedCount: 1 }
+fymsc41> db.Actor.deleteMany({age:{$gt"50"}})
+Uncaught:
+SyntaxError: Unexpected token, expected "," (1:29)
+
+> 1 | db.Actor.deleteMany({age:{$gt"50"}})
+    |                              ^
+  2 |
+
+fymsc41> db.Actor.deleteMany({age:{$gt:"50"}})
+{ acknowledged: true, deletedCount: 0 }
+fymsc41> db.Actor.find().pretty()
+[
+  {
+    _id: ObjectId('6a7c57db4edbec4d2fcd9a37'),
+    actorID: 1,
+    firstName: 'Robert',
+    lastName: 'Downey Jr.',
+    address: {
+      street: 'Main St',
+      city: 'New York',
+      state: 'NY',
+      country: 'USA',
+      pincode: '10001'
+    },
+    contact: { email: 'robert@example.com', phone: '9000000001' },
+    age: 61
+  },
+  {
+    _id: ObjectId('6a7c57db4edbec4d2fcd9a38'),
+    actorID: 2,
+    firstName: 'Chris',
+    lastName: 'Hemsworth',
+    address: {
+      street: 'King St',
+      city: 'Melbourne',
+      state: 'Victoria',
+      country: 'Australia',
+      pincode: '3000'
+    },
+    contact: { email: 'chrishems@example.com', phone: '9000000002' },
+    age: 42
+  },
+  {
+    _id: ObjectId('6a7c57db4edbec4d2fcd9a39'),
+    actorID: 3,
+    firstName: 'Joaquin',
+    lastName: 'Phoenix',
+    address: {
+      street: 'Park Ave',
+      city: 'New York',
+      state: 'NY',
+      country: 'USA',
+      pincode: '10002'
+    },
+    contact: { email: 'joaquin@example.com', phone: '9000000003' },
+    age: 51
+  },
+  {
+    _id: ObjectId('6a7c57db4edbec4d2fcd9a3a'),
+    actorID: 4,
+    firstName: 'Christian',
+    lastName: 'Bale',
+    address: {
+      street: 'King Rd',
+      city: 'London',
+      state: 'England',
+      country: 'UK',
+      pincode: 'SW1A'
+    },
+    contact: { email: 'balechristian@example.com', phone: '9000000004' },
+    age: 52
+  },
+  {
+    _id: ObjectId('6a7c57db4edbec4d2fcd9a3b'),
+    actorID: 5,
+    firstName: 'Ram',
+    lastName: 'Charan',
+    address: {
+      street: 'Lake Rd',
+      city: 'Hyderabad',
+      state: 'Telangana',
+      country: 'India',
+      pincode: '500001'
+    },
+    contact: { email: 'ramcharan@example.com', phone: '9000000005' },
+    age: 40
+  },
+  {
+    _id: ObjectId('6a7c57db4edbec4d2fcd9a3c'),
+    actorID: 6,
+    firstName: 'Jr. NTR',
+    lastName: 'Rao',
+    address: {
+      street: 'Park Rd',
+      city: 'Hyderabad',
+      state: 'Telangana',
+      country: 'India',
+      pincode: '500002'
+    },
+    contact: { email: 'jrntr@example.com', phone: '9000000006' },
+    age: 43
+  },
+  {
+    _id: ObjectId('6a7c57db4edbec4d2fcd9a3d'),
+    actorID: 7,
+    firstName: 'Rana',
+    lastName: 'Daggubati',
+    address: {
+      street: 'Hill Rd',
+      city: 'Hyderabad',
+      state: 'Telangana',
+      country: 'India',
+      pincode: '500003'
+    },
+    contact: { email: 'rana@example.com', phone: '9000000007' },
+    age: 41
+  },
+  {
+    _id: ObjectId('6a7c57db4edbec4d2fcd9a3e'),
+    actorID: 8,
+    firstName: 'Prabhas',
+    lastName: '',
+    address: {
+      street: 'Film Rd',
+      city: 'Hyderabad',
+      state: 'Telangana',
+      country: 'India',
+      pincode: '500004'
+    },
+    contact: { email: 'prabhas@example.com', phone: '9000000008' },
+    age: 46
+  },
+  {
+    _id: ObjectId('6a7c57db4edbec4d2fcd9a3f'),
+    actorID: 9,
+    firstName: 'Shahrukh',
+    lastName: 'Khan',
+    address: {
+      street: 'Sea Rd',
+      city: 'Mumbai',
+      state: 'Maharashtra',
+      country: 'India',
+      pincode: '400001'
+    },
+    contact: { email: 'skhan@example.com', phone: '9000000009' },
+    age: 60
+  },
+  {
+    _id: ObjectId('6a7c57db4edbec4d2fcd9a40'),
+    actorID: 10,
+    firstName: 'Madhuri',
+    lastName: 'Dixit',
+    address: {
+      street: 'Lake Rd',
+      city: 'Mumbai',
+      state: 'Maharashtra',
+      country: 'India',
+      pincode: '400002'
+    },
+    contact: { email: 'madhuri@example.com', phone: '9000000001' },
+    age: 59
+  }
+]
+fymsc41>  db.Actor.updateOne({actorId:5},undefined { $set:{"address.street":"MG Road",""}
+Uncaught:
+SyntaxError: Unexpected token, expected "," (1:42)
+
+> 1 |  db.Actor.updateOne({actorId:5},undefined { $set:{"address.street":"MG Road",""}
+    |                                           ^
+  2 |
+
+fymsc41>  db.Actor.updateOne({actorId:5},{ $set:{"address.street":"MG Road",""}
+Uncaught:
+SyntaxError: Unexpected token (1:69)
+
+> 1 |  db.Actor.updateOne({actorId:5},{ $set:{"address.street":"MG Road",""}
+    |                                                                      ^
+  2 |
+
+fymsc41>  db.Actor.updateOne({actorId:5},{ $set:{"address.street":"MG Road","address.city":"Pune"}})
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 0,
+  modifiedCount: 0,
+  upsertedCount: 0
+}
+fymsc41>  db.Actor.find({actorId:5})
+
+fymsc41>  db.Actor.updateOne({actorID:5},{ $set:{"address.street":"MG Road","address.city":"Pune"}})
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 1,
+  modifiedCount: 1,
+  upsertedCount: 0
+}
+fymsc41>  db.Film.updateMany({director:{$elemMatch:{firstName:"Christopher",lastName:"Nolan"}}},
+| { $set:{genre:["Action","Thriller"]}})
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 0,
+  modifiedCount: 0,
+  upsertedCount: 0
+}
+fymsc41> db.Film.updateMany({ directors: { $elemMatch: { firstName: "Christopher", lastName: "Nolan" } } }, { $set: { genre: ["Action", "Thriller"] } })
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 2,
+  modifiedCount: 2,
+  upsertedCount: 0
+}
+fymsc41> db.Film.updateOne({ title: { $elemMatch:/^T/},{"releaseDetails.0.rating":9}})
+Uncaught:
+SyntaxError: Unexpected token (1:46)
+
+> 1 | db.Film.updateOne({ title: { $elemMatch:/^T/},{"releaseDetails.0.rating":9}})
+    |                                               ^
+  2 |
+
+fymsc41> db.Film.updateOne({ title: { $elemMatch:/^T/},{$set:{"releaseDetails.0.rating":9}})
+Uncaught:
+SyntaxError: Unexpected token (1:46)
+
+> 1 | db.Film.updateOne({ title: { $elemMatch:/^T/},{$set:{"releaseDetails.0.rating":9}})
+    |                                               ^
+  2 |
+
+fymsc41> db.Film.updateOne({ title: /^T/},{$set:{"releaseDetails.0.rating":9}})
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 1,
+  modifiedCount: 1,
+  upsertedCount: 0
+}
+
