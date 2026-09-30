@@ -1,0 +1,133 @@
+==================== 1. LIBRARY DATABASE ====================
+
+1(a) List all people who have issued "The Hobbit"
+
+MATCH (p:Person)-[:IssuedBy]->(:Book {title:"The Hobbit"})
+RETURN p.name;
+
+
+1(b) Count the number of people who have read/issued "The Hobbit"
+
+MATCH (p:Person)-[:IssuedBy]->(:Book {title:"The Hobbit"})
+RETURN count(p);
+
+
+1(c) Add property "Number of books issued" for Joel Guedes
+
+MATCH (p:Person {name:"Joel Guedes"})-[:IssuedBy]->(b:Book)
+WITH p, count(b) AS total
+SET p.`Number of books issued` = total
+RETURN p.name, p.`Number of books issued`;
+
+
+1(d) List the names of publishers from London
+
+MATCH (p:Publisher {city:"London"})
+RETURN p.name;
+
+
+==================== 2. SONG DATABASE ====================
+
+2(a) List the names of songs written by "Kevin Parker"
+
+MATCH (s:Song)-[:WrittenBy]->(:SongAuthor {name:"Kevin Parker"})
+RETURN s.title;
+
+
+2(b) List the names of record companies who have financed "Let It Happen"
+
+MATCH (c:RecordingCompany)-[:Finances]->(:Song {title:"Let It Happen"})
+RETURN c.name;
+
+
+2(c) List the names of artists performing "Let It Happen"
+
+MATCH (a:Artist)-[:Performs]->(:Song {title:"Let It Happen"})
+RETURN a.name;
+
+
+2(d) Name the songs recorded by the studio "Wave House"
+
+MATCH (s:Song)-[:RecordedIn]->(:RecordingStudio {name:"Wave House"})
+RETURN s.title;
+
+
+==================== 3. EMPLOYEE DATABASE ====================
+
+3(a) List the names of employees in the department "Software Development"
+
+MATCH (e:Employee)-[:Works_in]->(:Department {name:"Software Development"})
+RETURN e.name;
+
+
+3(b) List the projects along with their properties, controlled by department "Software Development"
+
+MATCH (p:Project)-[:Controlled_by]->(:Department {name:"Software Development"})
+RETURN p, properties(p);
+
+
+3(c) List the departments along with the count of employees in it
+
+MATCH (e:Employee)-[:Works_in]->(d:Department)
+RETURN d.name, count(e);
+
+
+3(d) List the skillset for an employee "Joel Guedes"
+
+MATCH (:Employee {name:"Joel Guedes"})-[:Has_acquired]->(s:Skillset)
+RETURN s.skill;
+
+
+==================== 4. MOVIE DATABASE ====================
+
+4(a) Find all actors who have acted in "Oppenheimer"
+
+MATCH (a:Actor)-[:ACTED_IN]->(:Movie {title:"Oppenheimer"})
+RETURN a.name;
+
+
+4(b) Find all actors and the movies they acted in
+
+MATCH (a:Actor)-[:ACTED_IN]->(m:Movie)
+RETURN a.name, m.title;
+
+
+4(c) Find all actors who acted in movies after 2010
+
+MATCH (a:Actor)-[:ACTED_IN]->(m:Movie)
+WHERE m.releaseYear > 2010
+RETURN a.name, m;
+
+
+4(d) Find all movies produced by "Emma Thomas"
+
+MATCH (:Producer {name:"Emma Thomas"})-[:PRODUCED]->(m:Movie)
+RETURN m.title;
+
+
+==================== 5. SOCIAL NETWORK DATABASE ====================
+
+5(a) Find all friends of "James Carter", along with the year since when they know each other
+
+MATCH (:Person {name:"James Carter"})-[r:Friend_of]-(f:Person)
+RETURN f.name, r.since;
+
+
+5(b) List out the affiliations of "James Carter"
+
+MATCH (:Person {name:"James Carter"})-[:Affiliated_to]->(a:Affiliation)
+RETURN a.name;
+
+
+5(c) Find all friends of James Carter who are the same age as James Carter
+
+MATCH (p:Person {name:"James Carter"})-[:Friend_of]-(f:Person)
+WHERE f.age = p.age
+RETURN f.name;
+
+
+5(d) List out the messages posted by James Carter in his timeline during the year 2026
+
+MATCH (:Person {name:"James Carter"})-[:Creates]->(:Timeline {year:2026})-[:Contains]->(m:Message)
+RETURN m.content, m.sentOn;
+
