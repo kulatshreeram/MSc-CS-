@@ -1,0 +1,197 @@
+All Database Queries (From 1 to 5)
+1. Library Database
+(a) List readers who recommended The Lord of the Rings, The Hobbit, or Dune
+
+MATCH (r:Reader)-[:Recommended]->(b:Book)
+WHERE b.title IN ["The Lord of the Rings", "The Hobbit", "Dune"]
+RETURN DISTINCT r.name AS reader
+ORDER BY reader;
+
+(b) List readers who haven't recommended any book
+
+MATCH (r:Reader)
+WHERE NOT (r)-[:Recommended]->(:Book)
+RETURN r.name AS reader
+ORDER BY reader;
+
+(c) List authors whose books have been read or issued by the maximum number of readers
+
+MATCH (a:Author)-[:WROTE]->(b:Book)
+OPTIONAL MATCH (r:Reader)-[:Read|IssuedBy]->(b)
+WITH a, b, count(DISTINCT r) AS readers
+WITH max(readers) AS maxReaders,
+     collect({author:a.name, book:b.title, readers:readers}) AS rows
+UNWIND rows AS row
+WITH row, maxReaders
+WHERE row.readers = maxReaders
+RETURN row.author AS author, row.book AS book, row.readers AS readers;
+
+(d) List books recommended by Joel Guedes and read by at least one reader
+
+MATCH (:Reader {name:"Joel Guedes"})-[:Recommended]->(b:Book)
+MATCH (r:Reader)-[:Read]->(b)
+RETURN b.title AS book, count(DISTINCT r) AS readers
+ORDER BY book;
+
+(e) List books recommended by Joel Guedes and read by the maximum number of readers
+
+MATCH (:Reader {name:"Joel Guedes"})-[:Recommended]->(b:Book)
+OPTIONAL MATCH (r:Reader)-[:Read]->(b)
+WITH b, count(DISTINCT r) AS readers
+WITH max(readers) AS maxReaders,
+     collect({book:b.title, readers:readers}) AS rows
+UNWIND rows AS row
+WITH row, maxReaders
+WHERE row.readers = maxReaders
+RETURN row.book AS book, row.readers AS readers;
+
+(f) List publishers who haven't published books written by authors from Pune or Mumbai
+
+MATCH (p:Publisher)
+WHERE NOT EXISTS {
+    MATCH (p)<-[:PublishedBy]-(b:Book)<-[:WROTE]-(a:Author)
+    WHERE a.city IN ["Pune", "Mumbai"]
+}
+RETURN p.name AS publisher
+ORDER BY publisher;
+
+(g) List voracious readers who have read at least three books
+
+MATCH (r:Reader)-[:Read]->(b:Book)
+WITH r, count(DISTINCT b) AS booksRead
+WHERE booksRead >= 3
+RETURN r.name AS reader, booksRead
+ORDER BY booksRead DESC;
+
+2. Song Database
+(a) List artists whose songs are written only by Kevin Parker
+
+MATCH (a:Artist)-[:Performs]->(s:Song)
+OPTIONAL MATCH (s)-[:WrittenBy]->(w:SongAuthor)
+WITH a, collect(DISTINCT w.name) AS writers
+WHERE size(writers) = 1 AND writers[0] = "Kevin Parker"
+RETURN a.name AS artist
+ORDER BY artist;
+
+(b) List artists who have sung the maximum number of songs recorded at Electric Lady Studios
+
+MATCH (a:Artist)-[:Performs]->(s:Song)-[:RecordedIn]->
+      (:RecordingStudio {name:"Electric Lady Studios"})
+WITH a, count(DISTINCT s) AS songs
+WITH max(songs) AS maxSongs,
+     collect({artist:a.name, songs:songs}) AS rows
+UNWIND rows AS row
+WITH row, maxSongs
+WHERE row.songs = maxSongs
+RETURN row.artist AS artist, row.songs AS songs
+ORDER BY artist;
+
+(c) List songs financed by Universal Music and performed by Tame Impala
+
+MATCH (:RecordingCompany {name:"Universal Music"})-[:Finances]->(s:Song)
+      <-[:Performs]-(:Artist {name:"Tame Impala"})
+RETURN s.title AS song
+ORDER BY song;
+
+3. Employee Database
+(a) List employees having exactly the same skills as Thomas Andre
+
+MATCH (target:Employee {name:"Thomas Andre"})-[:Has_acquired]->(s:Skillset)
+WITH target, collect(DISTINCT s.skill) AS targetSkills
+MATCH (e:Employee)-[:Has_acquired]->(s:Skillset)
+WHERE e <> target
+WITH e, targetSkills, collect(DISTINCT s.skill) AS employeeSkills
+WHERE size(targetSkills) = size(employeeSkills)
+  AND all(skill IN targetSkills WHERE skill IN employeeSkills)
+RETURN e.name AS employee;
+
+(b) List projects controlled by Software Development that have employees from that department assigned to them
+
+MATCH (d:Department {name:"Software Development"})
+      <-[:Controlled_by]-(p:Project)
+      <-[:Assigned_to]-(e:Employee)-[:Works_in]->(d)
+RETURN p.name AS project, collect(DISTINCT e.name) AS employees
+ORDER BY project;
+
+(c) List projects belonging to departments managed by Schnauder Roist
+
+MATCH (:Employee {name:"Schnauder Roist"})-[:Manages]->(d:Department)
+      <-[:Controlled_by]-(p:Project)
+RETURN p.name AS project, d.name AS department
+ORDER BY project;
+
+4. Movie Database
+(a) List pairs of actors who appeared together in multiple movies
+
+MATCH (a1:Actor)-[:ACTED_IN]->(m:Movie)<-[:ACTED_IN]-(a2:Actor)
+WHERE a1.actorId < a2.actorId
+WITH a1, a2, collect(DISTINCT m.title) AS movies
+WHERE size(movies) > 1
+RETURN a1.name AS actor1, a2.name AS actor2, movies
+ORDER BY actor1, actor2;
+
+(b) Display actor–movie subgraphs with the roles played
+
+MATCH (a:Actor)-[:ACTED_IN]->(m:Movie)
+MATCH (a)-[:PLAYED]->(r:Role)-[:ROLE_IN]->(m)
+RETURN a, m, r;
+
+Alternative: Display results as a table
+
+MATCH (a:Actor)-[:ACTED_IN]->(m:Movie)
+MATCH (a)-[:PLAYED]->(r:Role)-[:ROLE_IN]->(m)
+RETURN a.name AS actor, m.title AS movie, r.character AS role
+ORDER BY movie;
+
+(c) List reviewers and the reviewers they follow, directly or through another reviewer
+
+MATCH (r:Reviewer)-[:FOLLOWS*1..2]->(f:Reviewer)
+RETURN DISTINCT r.name AS reviewer,
+       collect(DISTINCT f.name) AS follows
+ORDER BY reviewer;
+
+(d) List movies with the greatest number of reviews
+
+MATCH (m:Movie)<-[:REVIEWED]-(r:Reviewer)
+WITH m, count(r) AS reviews
+WITH max(reviews) AS maxReviews,
+     collect({movie:m.title, reviews:reviews}) AS rows
+UNWIND rows AS row
+WITH row, maxReviews
+WHERE row.reviews = maxReviews
+RETURN row.movie AS movie, row.reviews AS reviews;
+
+5. Social Network Database
+(a) List people who created the maximum number of timeline messages
+
+MATCH (p:Person)-[:Creates]->(:Timeline)-[:Contains]->(m:Message)
+WITH p, count(m) AS messages
+RETURN p.name AS person, messages
+ORDER BY messages DESC
+LIMIT 1;
+
+(b) List all friends of Emily Carter, who is a friend of John
+
+MATCH (:Person {name:"John"})-[:Friend_of]-(e:Person {name:"Emily Carter"})
+      -[:Friend_of]-(f:Person)
+WHERE f <> e
+RETURN DISTINCT f.name AS friend
+ORDER BY friend;
+
+(c) List people who have the maximum number of friends
+
+MATCH (p:Person)-[:Friend_of]-(f:Person)
+WITH p, count(DISTINCT f) AS friends
+WITH max(friends) AS maxFriends,
+     collect({person:p.name, friends:friends}) AS people
+UNWIND people AS person
+WITH person, maxFriends
+WHERE person.friends = maxFriends
+RETURN person.person AS name, person.friends AS friends;
+
+(d) List people who belong to at least two groups
+
+MATCH (p:Person)-[:Belongs_to]->(g:Group)
+WITH p, count(DISTINCT g) AS groups
+WHERE groups >= 2
+RETURN p.name AS person, groups

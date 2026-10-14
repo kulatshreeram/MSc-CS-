@@ -1,0 +1,4 @@
+CALL db.schema.visualization()
+MATCH n=()-[r]->( ) return n
+
+
