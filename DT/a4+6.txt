@@ -1,0 +1,493 @@
+1. Library Database
+A. Create the database data
+
+Run this code first.
+
+CREATE
+// AUTHORS
+(a1:Author {authorId:1, name:"J. R. R. Tolkien"}),
+(a2:Author {authorId:2, name:"George Orwell"}),
+(a3:Author {authorId:3, name:"Frank Herbert"}),
+(a4:Author {authorId:4, name:"Aarav Kulkarni", city:"Pune"}),
+
+// READERS
+(r1:Reader {readerId:1, name:"Joel Guedes"}),
+(r2:Reader {readerId:2, name:"Lucas Trowman"}),
+(r3:Reader {readerId:3, name:"Mr. Joshi"}),
+
+// PUBLISHERS
+(p1:Publisher {name:"Allen & Unwin"}),
+(p2:Publisher {name:"Secker & Warburg"}),
+(p3:Publisher {name:"Penguin India"}),
+
+// BOOKS
+(b1:Book {bookId:101, title:"The Lord of the Rings", status:"Issued"}),
+(b2:Book {bookId:102, title:"The Hobbit", status:"Issued"}),
+(b3:Book {bookId:103, title:"Nineteen Eighty-Four", status:"Available"}),
+(b4:Book {bookId:104, title:"Dune", status:"Issued"}),
+
+// WROTE
+(a1)-[:WROTE]->(b1),
+(a1)-[:WROTE]->(b2),
+(a2)-[:WROTE]->(b3),
+(a3)-[:WROTE]->(b4),
+
+// PUBLISHED BY
+(b1)-[:PublishedBy]->(p1),
+(b2)-[:PublishedBy]->(p1),
+(b3)-[:PublishedBy]->(p2),
+(b4)-[:PublishedBy]->(p3),
+
+// READ
+(r1)-[:Read]->(b1),
+(r1)-[:Read]->(b2),
+(r1)-[:Read]->(b3),
+(r2)-[:Read]->(b2),
+(r2)-[:Read]->(b4),
+(r3)-[:Read]->(b1),
+
+// RECOMMENDED
+(r1)-[:Recommended]->(b1),
+(r1)-[:Recommended]->(b2),
+(r2)-[:Recommended]->(b4);
+
+B. Assignment queries
+(a) Readers who recommended selected books
+
+MATCH (r:Reader)-[:Recommended]->(b:Book)
+WHERE b.title IN ["The Lord of the Rings","The Hobbit","Dune"]
+RETURN DISTINCT r.name AS reader;
+
+(b) Readers who haven't recommended any book
+
+MATCH (r:Reader)
+WHERE NOT (r)-[:Recommended]->(:Book)
+RETURN r.name AS reader;
+
+(c) Authors whose books have the maximum number of readers
+
+MATCH (a:Author)-[:WROTE]->(b:Book)
+OPTIONAL MATCH (r:Reader)-[:Read]->(b)
+WITH a,b,count(DISTINCT r) AS readers
+WITH max(readers) AS maxReaders,
+     collect({author:a.name,book:b.title,readers:readers}) AS rows
+UNWIND rows AS row
+WITH row,maxReaders
+WHERE row.readers=maxReaders
+RETURN row.author AS author,row.book AS book,row.readers AS readers;
+
+(d) Books recommended by Joel Guedes and read by at least one reader
+
+MATCH (:Reader {name:"Joel Guedes"})-[:Recommended]->(b:Book)
+MATCH (r:Reader)-[:Read]->(b)
+RETURN b.title AS book,count(DISTINCT r) AS readers;
+
+(e) Books recommended by Joel Guedes and read by the maximum number of readers
+
+MATCH (:Reader {name:"Joel Guedes"})-[:Recommended]->(b:Book)
+OPTIONAL MATCH (r:Reader)-[:Read]->(b)
+WITH b,count(DISTINCT r) AS readers
+WITH max(readers) AS maxReaders,
+     collect({book:b.title,readers:readers}) AS rows
+UNWIND rows AS row
+WITH row,maxReaders
+WHERE row.readers=maxReaders
+RETURN row.book AS book,row.readers AS readers;
+
+(f) Publishers who haven't published books written by authors from Pune or Mumbai
+
+MATCH (p:Publisher)
+WHERE NOT EXISTS {
+    MATCH (p)<-[:PublishedBy]-(b:Book)<-[:WROTE]-(a:Author)
+    WHERE a.city IN ["Pune","Mumbai"]
+}
+RETURN p.name AS publisher;
+
+(g) Readers who have read at least three books
+
+MATCH (r:Reader)-[:Read]->(b:Book)
+WITH r,count(DISTINCT b) AS booksRead
+WHERE booksRead>=3
+RETURN r.name AS reader,booksRead;
+
+2. Song Database
+A. Create the database data
+
+CREATE
+// ARTISTS
+(a1:Artist {artistId:1,name:"Tame Impala"}),
+(a2:Artist {artistId:2,name:"Arctic Monkeys"}),
+(a3:Artist {artistId:3,name:"The Strokes"}),
+
+// SONG AUTHORS
+(w1:SongAuthor {name:"Kevin Parker"}),
+(w2:SongAuthor {name:"Alex Turner"}),
+(w3:SongAuthor {name:"Julian Casablancas"}),
+
+// RECORDING COMPANIES
+(c1:RecordingCompany {name:"Universal Music"}),
+(c2:RecordingCompany {name:"Domino Recording Company"}),
+
+// RECORDING STUDIOS
+(st1:RecordingStudio {name:"Wave House"}),
+(st2:RecordingStudio {name:"Electric Lady Studios"}),
+
+// SONGS
+(s1:Song {songId:101,title:"Dracula",genre:"Psychedelic Rock"}),
+(s2:Song {songId:102,title:"Let It Happen",genre:"Psychedelic Rock"}),
+(s3:Song {songId:103,title:"505",genre:"Indie Rock"}),
+(s4:Song {songId:104,title:"The Adults Are Talking",genre:"Alternative Rock"}),
+
+// PERFORMS
+(a1)-[:Performs]->(s1),
+(a1)-[:Performs]->(s2),
+(a2)-[:Performs]->(s3),
+(a3)-[:Performs]->(s4),
+
+// WRITTEN BY
+(s1)-[:WrittenBy]->(w1),
+(s2)-[:WrittenBy]->(w1),
+(s3)-[:WrittenBy]->(w2),
+(s4)-[:WrittenBy]->(w3),
+
+// RECORDED IN
+(s1)-[:RecordedIn]->(st1),
+(s2)-[:RecordedIn]->(st1),
+(s3)-[:RecordedIn]->(st2),
+(s4)-[:RecordedIn]->(st2),
+
+// FINANCES
+(c1)-[:Finances]->(s1),
+(c1)-[:Finances]->(s2),
+(c2)-[:Finances]->(s3),
+(c2)-[:Finances]->(s4);
+
+B. Assignment queries
+(a) Artists whose songs are written only by Kevin Parker
+
+MATCH (a:Artist)-[:Performs]->(s:Song)-[:WrittenBy]->(w:SongAuthor)
+WITH a,collect(DISTINCT w.name) AS writers
+WHERE writers=["Kevin Parker"]
+RETURN a.name AS artist;
+
+(b) Artists who have sung the maximum number of songs recorded at Electric Lady Studios
+
+MATCH (a:Artist)-[:Performs]->(s:Song)-[:RecordedIn]->(:RecordingStudio {name:"Electric Lady Studios"})
+WITH a,count(DISTINCT s) AS songs
+WITH max(songs) AS maxSongs,
+     collect({artist:a.name,songs:songs}) AS rows
+UNWIND rows AS row
+WITH row,maxSongs
+WHERE row.songs=maxSongs
+RETURN row.artist AS artist,row.songs AS songs;
+
+(c) Songs financed by Universal Music and performed by Tame Impala
+
+MATCH (:RecordingCompany {name:"Universal Music"})-[:Finances]->(s:Song)<-[:Performs]-(:Artist {name:"Tame Impala"})
+RETURN s.title AS song;
+
+3. Employee Database
+A. Create the database data
+
+CREATE
+// EMPLOYEES
+(e1:Employee {employeeId:1,name:"Joel Guedes"}),
+(e2:Employee {employeeId:2,name:"Thomas Andre"}),
+(e3:Employee {employeeId:3,name:"Schnauder Roist"}),
+(e4:Employee {employeeId:4,name:"Vatore Noil"}),
+
+// DEPARTMENTS
+(d1:Department {name:"Software Development"}),
+(d2:Department {name:"Artificial Intelligence"}),
+(d3:Department {name:"Data Analytics"}),
+
+// SKILLS
+(s1:Skillset {skill:"Python"}),
+(s2:Skillset {skill:"MongoDB"}),
+(s3:Skillset {skill:"Java"}),
+(s4:Skillset {skill:"Machine Learning"}),
+
+// PROJECTS
+(p1:Project {name:"Aarogya"}),
+(p2:Project {name:"Diaita"}),
+(p3:Project {name:"InsightVault"}),
+
+// WORKS IN
+(e1)-[:Works_in]->(d1),
+(e2)-[:Works_in]->(d1),
+(e3)-[:Works_in]->(d1),
+(e4)-[:Works_in]->(d2),
+
+// ACQUIRED SKILLS
+(e1)-[:Has_acquired]->(s1),
+(e1)-[:Has_acquired]->(s2),
+(e2)-[:Has_acquired]->(s1),
+(e2)-[:Has_acquired]->(s2),
+(e3)-[:Has_acquired]->(s3),
+(e4)-[:Has_acquired]->(s4),
+
+// ASSIGNED TO
+(e1)-[:Assigned_to]->(p1),
+(e2)-[:Assigned_to]->(p3),
+(e3)-[:Assigned_to]->(p1),
+(e4)-[:Assigned_to]->(p2),
+
+// CONTROLLED BY
+(p1)-[:Controlled_by]->(d1),
+(p2)-[:Controlled_by]->(d2),
+(p3)-[:Controlled_by]->(d1),
+
+// DEPARTMENT MANAGEMENT
+(e3)-[:Manages]->(d1),
+(e4)-[:Manages]->(d2);
+
+B. Assignment queries
+(a) Employees having exactly the same skills as Joel Guedes
+
+MATCH (target:Employee {name:"Joel Guedes"})-[:Has_acquired]->(s:Skillset)
+WITH target,collect(DISTINCT s.skill) AS targetSkills
+MATCH (e:Employee)-[:Has_acquired]->(s:Skillset)
+WHERE e<>target
+WITH e,targetSkills,collect(DISTINCT s.skill) AS employeeSkills
+WHERE size(targetSkills)=size(employeeSkills)
+AND all(skill IN targetSkills WHERE skill IN employeeSkills)
+RETURN e.name AS employee;
+
+(b) Projects controlled by Software Development with employees from that department assigned to them
+
+MATCH (d:Department {name:"Software Development"})<-[:Controlled_by]-(p:Project)<-[:Assigned_to]-(e:Employee)-[:Works_in]->(d)
+RETURN p.name AS project,collect(DISTINCT e.name) AS employees;
+
+(c) Projects belonging to departments managed by Schnauder Roist
+
+MATCH (:Employee {name:"Schnauder Roist"})-[:Manages]->(d:Department)<-[:Controlled_by]-(p:Project)
+RETURN p.name AS project,d.name AS department;
+
+4. Movie Database
+A. Create the database data
+
+CREATE
+// ACTORS
+(a1:Actor {actorId:1,name:"Leonardo DiCaprio"}),
+(a2:Actor {actorId:2,name:"Cillian Murphy"}),
+(a3:Actor {actorId:3,name:"Margot Robbie"}),
+(a4:Actor {actorId:4,name:"Tom Holland"}),
+
+// MOVIES
+(m1:Movie {movieId:101,title:"Inception"}),
+(m2:Movie {movieId:102,title:"Oppenheimer"}),
+(m3:Movie {movieId:103,title:"Barbie"}),
+(m4:Movie {movieId:104,title:"Spider-Man: No Way Home"}),
+
+// ROLES
+(r1:Role {character:"Dom Cobb"}),
+(r2:Role {character:"J. Robert Oppenheimer"}),
+(r3:Role {character:"Barbie"}),
+(r4:Role {character:"Peter Parker"}),
+
+// DIRECTORS
+(d1:Director {name:"Christopher Nolan"}),
+(d2:Director {name:"Greta Gerwig"}),
+(d3:Director {name:"Jon Watts"}),
+
+// PRODUCERS
+(p1:Producer {name:"Emma Thomas"}),
+(p2:Producer {name:"Kevin Feige"}),
+
+// FINANCIERS
+(f1:Financier {name:"Warner Bros."}),
+(f2:Financier {name:"Universal Pictures"}),
+
+// REVIEWERS
+(rw1:Reviewer {name:"Daniel Reed"}),
+(rw2:Reviewer {name:"Emily Carter"}),
+
+// ACTED IN
+(a1)-[:ACTED_IN]->(m1),
+(a2)-[:ACTED_IN]->(m2),
+(a3)-[:ACTED_IN]->(m3),
+(a4)-[:ACTED_IN]->(m4),
+
+// PLAYED AND ROLE IN
+(a1)-[:PLAYED]->(r1),
+(r1)-[:ROLE_IN]->(m1),
+(a2)-[:PLAYED]->(r2),
+(r2)-[:ROLE_IN]->(m2),
+(a3)-[:PLAYED]->(r3),
+(r3)-[:ROLE_IN]->(m3),
+(a4)-[:PLAYED]->(r4),
+(r4)-[:ROLE_IN]->(m4),
+
+// DIRECTED
+(d1)-[:DIRECTED]->(m1),
+(d1)-[:DIRECTED]->(m2),
+(d2)-[:DIRECTED]->(m3),
+(d3)-[:DIRECTED]->(m4),
+
+// PRODUCED
+(p1)-[:PRODUCED]->(m1),
+(p1)-[:PRODUCED]->(m2),
+(p2)-[:PRODUCED]->(m3),
+(p2)-[:PRODUCED]->(m4),
+
+// FINANCED
+(f1)-[:FINANCED {budget:160000000}]->(m1),
+(f2)-[:FINANCED {budget:100000000}]->(m2),
+(f1)-[:FINANCED {budget:145000000}]->(m3),
+(f2)-[:FINANCED {budget:200000000}]->(m4),
+
+// FOLLOWS AND REVIEWS
+(rw1)-[:FOLLOWS]->(rw2),
+(rw1)-[:REVIEWED {rating:9}]->(m2),
+(rw2)-[:REVIEWED {rating:8}]->(m2),
+(rw1)-[:REVIEWED {rating:9}]->(m1);
+
+B. Assignment queries
+(a) Pairs of actors who appeared together in multiple movies
+
+MATCH (a1:Actor)-[:ACTED_IN]->(m:Movie)<-[:ACTED_IN]-(a2:Actor)
+WHERE a1.actorId<a2.actorId
+WITH a1,a2,collect(DISTINCT m.title) AS movies
+WHERE size(movies)>1
+RETURN a1.name AS actor1,a2.name AS actor2,movies;
+
+(b) Display actor–movie subgraphs with roles
+
+MATCH (a:Actor)-[:ACTED_IN]->(m:Movie)
+MATCH (a)-[:PLAYED]->(r:Role)-[:ROLE_IN]->(m)
+RETURN a,m,r;
+
+Alternative: Display results as a table
+
+MATCH (a:Actor)-[:ACTED_IN]->(m:Movie)
+MATCH (a)-[:PLAYED]->(r:Role)-[:ROLE_IN]->(m)
+RETURN a.name AS actor,m.title AS movie,r.character AS role
+ORDER BY movie;
+
+(c) Reviewers and the reviewers they follow
+
+MATCH (r:Reviewer)-[:FOLLOWS*1..2]->(f:Reviewer)
+RETURN DISTINCT r.name AS reviewer,collect(DISTINCT f.name) AS follows;
+
+(d) Movies with the greatest number of reviews
+
+MATCH (m:Movie)<-[:REVIEWED]-(r:Reviewer)
+WITH m,count(r) AS reviews
+WITH max(reviews) AS maxReviews,
+     collect({movie:m.title,reviews:reviews}) AS rows
+UNWIND rows AS row
+WITH row,maxReviews
+WHERE row.reviews=maxReviews
+RETURN row.movie AS movie,row.reviews AS reviews;
+
+5. Social Network Database
+A. Create the database data
+
+CREATE
+// PERSONS
+(p1:Person {personId:1,name:"John",city:"New York"}),
+(p2:Person {personId:2,name:"Emily Carter",city:"Los Angeles"}),
+(p3:Person {personId:3,name:"Ethan Walker",city:"Chicago"}),
+(p4:Person {personId:4,name:"Joel Guedes",city:"Seattle"}),
+
+// AFFILIATIONS
+(a1:Affiliation {name:"Harvard University"}),
+(a2:Affiliation {name:"Open Source Community"}),
+
+// GROUPS
+(g1:Group {name:"AI Developers"}),
+(g2:Group {name:"Movie Lovers"}),
+
+// STORIES
+(s1:Story {title:"Won AI Hackathon"}),
+(s2:Story {title:"Weekend Movie Marathon"}),
+
+// TIMELINES
+(t1:Timeline {year:2025}),
+(t2:Timeline {year:2026}),
+
+// MESSAGES
+(m1:Message {content:"Congratulations!"}),
+(m2:Message {content:"See you at movie night!"}),
+
+// FRIEND OF
+(p1)-[:Friend_of {since:2022}]->(p2),
+(p2)-[:Friend_of {since:2023}]->(p3),
+(p3)-[:Friend_of {since:2024}]->(p4),
+(p4)-[:Friend_of {since:2025}]->(p1),
+
+// AFFILIATED TO
+(p1)-[:Affiliated_to]->(a1),
+(p2)-[:Affiliated_to]->(a1),
+(p3)-[:Affiliated_to]->(a2),
+(p4)-[:Affiliated_to]->(a2),
+
+// BELONGS TO
+(p1)-[:Belongs_to]->(g1),
+(p1)-[:Belongs_to]->(g2),
+(p2)-[:Belongs_to]->(g1),
+(p3)-[:Belongs_to]->(g2),
+(p4)-[:Belongs_to]->(g1),
+
+// CREATES STORIES
+(p1)-[:Creates]->(s1),
+(p2)-[:Creates]->(s2),
+
+// STORY REFERS TO PERSON
+(s1)-[:Refers_to]->(p2),
+(s2)-[:Refers_to]->(p3),
+
+// CREATES TIMELINES
+(p1)-[:Creates]->(t1),
+(p2)-[:Creates]->(t2),
+
+// TIMELINE REFERENCES STORIES
+(t1)-[:Reference_for]->(s1),
+(t2)-[:Reference_for]->(s2),
+
+// TIMELINE CONTAINS MESSAGES
+(t1)-[:Contains]->(m1),
+(t2)-[:Contains]->(m2);
+
+B. Assignment queries
+(a) People who created the maximum number of timeline messages
+
+MATCH (p:Person)-[:Creates]->(:Timeline)-[:Contains]->(m:Message)
+WITH p,count(m) AS messages
+RETURN p.name AS person,messages
+ORDER BY messages DESC
+LIMIT 1;
+
+(b) List friends of Emily Carter, who is a friend of John
+
+MATCH (:Person {name:"John"})-[:Friend_of]-(e:Person {name:"Emily Carter"})-[:Friend_of]-(f:Person)
+WHERE f<>e
+RETURN DISTINCT f.name AS friend;
+
+(c) People who have the maximum number of friends
+
+MATCH (p:Person)-[:Friend_of]-(f:Person)
+WITH p,count(DISTINCT f) AS friends
+WITH max(friends) AS maxFriends,
+     collect({person:p.name,friends:friends}) AS people
+UNWIND people AS person
+WITH person,maxFriends
+WHERE person.friends=maxFriends
+RETURN person.person AS name,person.friends AS friends;
+
+(d) People who belong to at least two groups
+
+MATCH (p:Person)-[:Belongs_to]->(g:Group)
+WITH p,count(DISTINCT g) AS groups
+WHERE groups>=2
+RETURN p.name AS person,groups
+ORDER BY groups DESC;
+
+Important instructions
+
+    Run each database's CREATE code once, followed by its assignment queries.
+    If you already created a database, don't run its CREATE code again unless you want duplicate nodes.
+    These are separate datasets logically, but Neo4j can store them in the same database. Use unique labels and property values or clear the existing data before starting over.
+    The examples use the relationship names and properties shown in each creation script.
+
+
